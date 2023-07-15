@@ -11,9 +11,7 @@ type HeaderProps ={
     label: string,
     link: string
   }[]
-
 }
-
 const Header = ({data, pages}: HeaderProps) => {
   return (
     <header className='flex flex-col relative bg-linear-557AFF w-full h-48 '>
@@ -27,13 +25,10 @@ const Header = ({data, pages}: HeaderProps) => {
               href={item.link}
               className='px-6 py-2 min-w-100 hover:bg-blue-light 
               hover:text-blue font-display uppercase tracking-wide
-              sm:bg-transparent bg-white 
-              '>
+              sm:bg-transparent bg-white'>
                 {item.label}
             </Link>
-            )
-          })
-
+            )})
           }
         </nav>
         <h1 className='text-white uppercase pl-2 sm:pl-0'>{data.name}</h1>

@@ -20,7 +20,9 @@ export default function RootLayout({
       <head />
       <body >
         <Header  data={aboutMeData} pages={pages}/>
+        <main className='sm:mb-32 mb-16'>
         {children}
+        </main>
         <Footer data={contactMeLinks} />
       </body>
     </html>
