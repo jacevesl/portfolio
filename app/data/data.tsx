@@ -129,8 +129,8 @@ export const projects = [
 ];
 
 export const contactMeLinks = [
-    "jacevesl@gmail",
-    "@jacevesl",
+    "time2code@gmail",
+    "twiter",
     "linkedin",
     "medium",
 ];
