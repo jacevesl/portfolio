@@ -29,7 +29,7 @@ const Form = () => {
             if(!response.ok){throw new Error('HTTP error status:' + response.status)}
             setMessageSent(true);
         } catch (error:any) {
-            console.log('There was a server error' + error.message)
+            console.log('There was a server error ' + error.message)
         }
     }
     return (
@@ -99,7 +99,7 @@ const Form = () => {
           hover:text-blue hover:bg-white hover:border'
           type='submit'>Send Message</button>
     </form>
-            {isMessageSent && <p> Your message has been sent, thank you</p>}
+            {isMessageSent && <p>Your message has been sent, thank you</p>}
         </>
   )
 }

@@ -38,11 +38,15 @@ const ProjectCard = ({data}: ProjectCardProps) => {
        {/* footer  */}
             <div className='p-4 flex flex-row mt-4 justify-between'>
                 {/* Github icon  */}
-                <Github className='icons-contactMe'/>
-                <a href={links[0].url} className='flex items-center'>Icon <span className='text-black'>{links[0].text}</span></a>
+              <a href={links[0].url} className='flex items-center'>
+                  <Github className='icons_contactme' />
+                  <span className='text-black'> {links[0].text}</span>
+              </a>
                 {/* Site icon  */}
-                <Window className='icons-contactMe'/>
-                  <a href={links[1].url} className='flex items-center'>Icon <span className='text-black'>{links[1].text}</span></a>
+              <a href={links[1].url} className='flex items-center'>
+                  <Window className='icons_contactme' />
+                  <span className='text-black'> {links[1].text}</span>
+              </a>
             </div>
 
         </div>
