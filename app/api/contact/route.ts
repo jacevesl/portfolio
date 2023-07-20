@@ -1,38 +1,33 @@
 import { NextRequest, NextResponse } from "next/server";
-import fs from 'fs'
-import path from 'path'
-// Suggestion by the linter instead  of
-// const fs =require('fs')
-// const path =require('path')
-export async function POST(request: NextRequest){
-    
-        const data = await request.json()
-    // Read DB (JSON file)
-        const filePath = path.resolve(process.cwd(),'app/data/submission.json')
-    // The process.cwd() method returns the current working directory of the Node.js process.
-        let submission:any=[]
-        try {
-            const data = fs.readFileSync(filePath, 'utf8')
-            submission = JSON.parse(data)
-        } catch (error) {
-            console.log('Error reading file', error)
-        }
-    // Here we add the new data and write it back
-        submission.push(data)
-        try {
-            const newData =JSON.stringify(submission, null, 2)
-            fs.writeFileSync(filePath,newData, 'utf8')
-        } catch (error) {
-            console.log('Error writing file', error)
-        }
-        return NextResponse.json({
-            data:data,
-            message: 'This message has been successfully sent'
-        })
-    }
+import React from "react";
+import mongoose from "mongoose";
+import Message from '../../../models/Message'
 
-// export async function GET(){
-//     return NextResponse.json({
-//         message: 'Whatever'
-//     })
-// }
+export async function POST(req:NextRequest, res:NextResponse){
+    const MONGODB_URI = process.env.MONGODB_URI
+    // let client
+    try {
+        await mongoose.connect (MONGODB_URI)
+        // client = await mongoose.connect (MONGODB_URI)
+        console.log("DB connected");
+    } catch (error) {
+        console.log('there was a connection error to the DB',error);
+    }
+    const data = await req.json()
+    const {name, email, company, message} = data
+    // The above comes  from the request (by the submit function)
+    if (!name || !company || !email || !email.includes('@') || message.trim()==='' || 
+    name.trim()===''){
+        NextResponse.json({message: 'Invalid input - fill all the fields'},{status:422})
+        return
+    }
+    const newData = {...data, date:new Date()}
+    try {
+        await Message.create(newData)
+        console.log('Message sent')
+        return NextResponse.json({message: 'Message Sent', status:201})
+    } catch (error) {
+        console.log('Message failed to create', error)
+        return NextResponse.json('Failed to create a new prompt', {status:500})
+    }
+}

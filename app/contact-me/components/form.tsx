@@ -1,12 +1,11 @@
 'use client'
-import React, { useState } from "react";
-
+import React, { useRef, useState, useEffect} from "react";
 const Form = () => {
-    const [isMessageSent, setMessageSent] = useState<boolean>(false);
+    const [isMessageSent, setIsMessageSent] = useState<boolean>(false);
+    const formRef = useRef<HTMLFormElement | null>(null)
     async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault()
         const target = event.currentTarget;
-
         const name = target.elements.namedItem("name") as HTMLInputElement;
         const company = target.elements.namedItem("company") as HTMLInputElement;
         const email = target.elements.namedItem("email") as HTMLInputElement;
@@ -19,77 +18,86 @@ const Form = () => {
             message: message.value,
         };
         try {
-            const response = await fetch('/api/contact', 
-            {   method:'POST',
-            body: JSON.stringify(data),
-                headers:{
-                    'Content-Type': 'application/json'
-                }
-            })
-            if(!response.ok){throw new Error('HTTP error status:' + response.status)}
-            setMessageSent(true);
-        } catch (error:any) {
+            const response = await fetch('/api/contact',
+                {
+                    method: 'POST',
+                    body: JSON.stringify(data),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+            if (!response.ok) { throw new Error('HTTP error status:' + response.status) }
+            setIsMessageSent(true);
+        } catch (error: any) {
             console.log('There was a server error ' + error.message)
         }
     }
+    useEffect(() => {
+        let timeout:NodeJS.Timeout
+        if(isMessageSent && formRef){
+            setTimeout(() =>{
+                setIsMessageSent(false)
+            },2000)
+           formRef.current?.reset()
+        }
+        return ()=>{
+            clearTimeout(timeout)
+        }
+    }, [isMessageSent]);
     return (
         <>
-    
-    
-
-    <form onSubmit={handleSubmit} className='bg-white'>
-        <div className='mb-4'>
-            <label className='label-form' htmlFor='name'>Name</label>
-            <input
-            id='name'
-            type='text'
-            name='name'
-            className='input-form'
-            required
-            minLength={3}
-            maxLength={200}
-            />
-        </div>
-          <div className='mb-4'>
-              <label className='label-form' htmlFor='email'>Email</label>
-              <input
-                  id='email'
-                  type='text'
-                  name='email'
-                  className='input-form'
-                  required
-                  minLength={5}
-                  maxLength={200}
-              />
-          </div>
-          <div className='mb-4'>
-              <label className='label-form' htmlFor='company'>Company</label>
-            {/* The htmlFor property sets or returns the value of the for attribute of a label.
+            <form onSubmit={handleSubmit} className='bg-white p-10' ref={formRef}>
+                <div className='mb-4'>
+                    <label className='label-form' htmlFor='name'>Name</label>
+                    <input
+                        id='name'
+                        type='text'
+                        name='name'
+                        className='input-form'
+                        required
+                        minLength={3}
+                        maxLength={200}
+                    />
+                </div>
+                <div className='mb-4'>
+                    <label className='label-form' htmlFor='email'>Email</label>
+                    <input
+                        id='email'
+                        type='text'
+                        name='email'
+                        className='input-form'
+                        required
+                        minLength={5}
+                        maxLength={200}
+                    />
+                </div>
+                <div className='mb-4'>
+                    <label className='label-form' htmlFor='company'>Company</label>
+                    {/* The htmlFor property sets or returns the value of the for attribute of a label.
                 The for attribute specifies which form element a label is bound to. */}
- 
-              <input
-                  id= 'company'
-                  type='text'
-                  name='company'
-                  className='input-form'
-                  minLength={2}
-                  maxLength={200}
-              />
-          </div>
-          <div className='mb-4'>
-              <label className='label-form' htmlFor='message'>Message</label>
-              <textarea
-                  id='message'
-                //   type='text'
-                  name='message'
-                  className='input-form'
-                  required
-                  minLength={10}
-                  maxLength={1000}
-              />
-          </div>
-          <button 
-          className='
+                    <input
+                        id='company'
+                        type='text'
+                        name='company'
+                        className='input-form'
+                        minLength={2}
+                        maxLength={200}
+                    />
+                </div>
+                <div className='mb-4'>
+                    <label className='label-form' htmlFor='message'>Message</label>
+                    <textarea
+                        id='message'
+                        //   type='text'
+                        name='message'
+                        className='input-form'
+                        required
+                        minLength={10}
+                        maxLength={1000}
+                    />
+                </div>
+                <button
+                    className='
           
           bg-blue 
           rounded-md 
@@ -97,11 +105,10 @@ const Form = () => {
           text-white 
           min-w-100
           hover:text-blue hover:bg-white hover:border'
-          type='submit'>Send Message</button>
-    </form>
+                    type='submit'>Send Message</button>
+            </form>
             {isMessageSent && <p>Your message has been sent, thank you</p>}
         </>
-  )
+    )
 }
-
 export default Form
